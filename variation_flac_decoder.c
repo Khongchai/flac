@@ -7,8 +7,8 @@ EM_JS(int, variation_flac_pull_input, (FLAC__byte *buffer, int length), {
     return Module.flacPullInput(buffer, length);
 });
 
-EM_JS(void, variation_flac_push_output, (const float *planar, int frames, int channels, int sample_rate), {
-    Module.flacPushOutput(planar, frames, channels, sample_rate);
+EM_JS(void, variation_flac_push_output, (const float *planar, int frames, int channels, int sample_rate, int bits_per_sample), {
+    Module.flacPushOutput(planar, frames, channels, sample_rate, bits_per_sample);
 });
 
 typedef struct {
@@ -49,7 +49,7 @@ static FLAC__StreamDecoderWriteStatus write_pushed(const FLAC__StreamDecoder *de
         for (uint32_t i = 0; i < frames; i++)
             out[i] = (float)buffer[ch][i] * scale;
     }
-    variation_flac_push_output(c->planar, (int)frames, (int)channels, (int)frame->header.sample_rate);
+    variation_flac_push_output(c->planar, (int)frames, (int)channels, (int)frame->header.sample_rate, (int)frame->header.bits_per_sample);
     return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
 }
 
